@@ -1,0 +1,49 @@
+---
+alwaysApply: true
+description: Zoho Catalyst backend development rules and constraints
+---
+
+# Zoho Catalyst Backend Development Rules
+
+## Project Architecture
+- This is a **Zoho Catalyst** project, NOT Spring Boot, NOT Express, NOT a servlet container
+- Single Java backend entry file: [SkillBridge.java](mdc:functions/SkillBridge/SkillBridge.java)
+- SkillBridge.java handles ALL HTTP routing and logic
+- Uses Zoho Catalyst Java SDK patterns for requests and responses
+
+## Authentication
+- Authentication is handled entirely by **Zoho Catalyst Hosted Authentication**
+- **DO NOT** implement login, signup, JWT, sessions, or token validation
+- The currently logged-in user must be obtained from the Catalyst request context inside SkillBridge.java
+- If a request has no authenticated user, return HTTP 401
+
+## Database
+- Database is **Zoho Catalyst Data Store**
+- Queries are written using **ZCQL** (Zoho Catalyst Query Language), NOT JDBC SQL
+- ZCQL is executed using Catalyst SDK APIs
+- **EVERY query must be scoped to the logged-in user using CREATORID**
+
+## Data Model
+
+### Learning Table
+- ROWID (primary key)
+- CREATORID (auto, user ownership)
+- topic (varchar, required)
+- category (varchar, required)
+- source (varchar, optional)
+
+### AppliedSkill Table
+- ROWID (primary key)
+- CREATORID (auto)
+- learning_id (foreign key → Learning.ROWID)
+- type (varchar, required)
+- notes (text, optional)
+
+### Relationships
+- One Learning → Many AppliedSkill
+- AppliedSkill always belongs to exactly one Learning
+
+## Important Constraints
+- **DO NOT** assume generic SQL, ORM, or framework behavior
+- **ALWAYS** use Catalyst SDK–specific APIs and patterns
+- All database operations must filter by CREATORID to ensure user data isolation

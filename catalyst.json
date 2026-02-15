@@ -1,0 +1,14 @@
+{
+  "functions": {
+    "targets": [
+      "SkillBridge"
+    ],
+    "ignore": [
+      ".output"
+    ],
+    "source": "functions"
+  },
+  "client": {
+    "source": "client"
+  }
+}

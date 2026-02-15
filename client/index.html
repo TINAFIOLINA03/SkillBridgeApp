@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SkillBridge — Learning to Applied Skill Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="main.css" />
+</head>
+
+<body>
+    <div class="app">
+        <header class="header">
+            <div class="header-brand">
+                <h1 class="logo">SkillBridge</h1>
+                <p class="tagline">Learning to Applied Skill Tracker</p>
+            </div>
+            <div class="header-actions" id="header-actions">
+                <a href="#" class="btn btn-secondary" id="btn-view-learning">View Learning</a>
+                <button type="button" class="btn btn-primary" id="btn-add-learning">+ Add Learning</button>
+            </div>
+        </header>
+
+        <main class="main">
+            <!-- Dashboard view: stats only; actions in header -->
+            <section id="dashboard-view" class="view">
+                <div class="dashboard-cards" id="dashboard-cards">
+                    <div class="card at-a-glance">
+                        <h2>At a glance</h2>
+                        <div class="glance-grid">
+                            <div class="glance-item">
+                                <span class="glance-value" id="stat-total">0</span>
+                                <span class="glance-label">Learning items</span>
+                            </div>
+                            <div class="glance-item">
+                                <span class="glance-value glance-applied" id="stat-applied">0</span>
+                                <span class="glance-label">Applied</span>
+                            </div>
+                            <div class="glance-item">
+                                <span class="glance-value glance-pending" id="stat-pending">0</span>
+                                <span class="glance-label">Pending</span>
+                            </div>
+                            <div class="glance-item">
+                                <span class="glance-value" id="stat-progress">0%</span>
+                                <span class="glance-label">Progress</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card today-focus">
+                        <h2>Today's focus <span class="card-badge" id="focus-pending-badge">0 pending</span></h2>
+                        <div id="focus-list" class="focus-list"></div>
+                        <p id="focus-empty" class="empty-message hidden">No pending learnings. Add one or view all.</p>
+                    </div>
+                    <div class="card needs-application">
+                        <h2>Needs an application</h2>
+                        <p class="card-desc">Learning items waiting for real-world practice.</p>
+                        <div id="needs-list" class="needs-list"></div>
+                        <p id="needs-empty" class="empty-message hidden">None — great momentum!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Learning list view (separate from dashboard) -->
+            <section id="list-view" class="view hidden">
+                <div class="list-header">
+                    <button type="button" class="btn btn-text back-btn" id="btn-back-to-dashboard">← Dashboard</button>
+                    <div class="list-title-row">
+                        <div>
+                            <h2>Your Learning</h2>
+                            <p class="list-subtitle" id="list-subtitle">0 items tracked</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="list-sections">
+                    <div class="list-section">
+                        <h3>Needs application <span class="section-count" id="needs-count">0</span></h3>
+                        <div id="learnings-needs-tbody" class="learning-cards"></div>
+                    </div>
+                    <div class="list-section">
+                        <h3>Applied <span class="section-count" id="applied-count">0</span></h3>
+                        <div id="learnings-applied-tbody" class="learning-cards"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Learning detail view -->
+            <section id="detail-view" class="view hidden">
+                <div class="detail-header">
+                    <button type="button" class="btn btn-text back-btn" id="btn-back-to-list">← Learning</button>
+                    <button type="button" class="btn btn-primary" id="btn-add-applied-skill">+ Add Applied Skill</button>
+                </div>
+                <div class="panel detail-learning-panel" id="detail-learning-panel"></div>
+                <div class="panel applied-list-panel">
+                    <h2>Applied skills</h2>
+                    <div id="applied-cards" class="applied-cards"></div>
+                    <p id="applied-empty" class="empty-message hidden">No applied skills yet. Add one above.</p>
+                </div>
+            </section>
+        </main>
+
+        <!-- Modal: Add Learning -->
+        <div id="modal-add-learning" class="modal hidden" role="dialog" aria-labelledby="modal-add-learning-title">
+            <div class="modal-backdrop" id="modal-add-learning-backdrop"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modal-add-learning-title">Add learning</h2>
+                    <button type="button" class="modal-close" id="modal-add-learning-close" aria-label="Close">&times;</button>
+                </div>
+                <form id="form-add-learning" class="form">
+                    <div class="form-row">
+                        <label for="input-topic">Learning title <span class="required">*</span></label>
+                        <input type="text" id="input-topic" name="topic" required placeholder="e.g., Docker" />
+                        <span class="form-hint">Keep it short. You can attach applied skills right after.</span>
+                    </div>
+                    <div class="form-row">
+                        <label for="input-category">Category <span class="required">*</span></label>
+                        <select id="input-category" name="category" required>
+                            <option value="">Select category</option>
+                            <option value="Technical">Technical</option>
+                            <option value="Professional Skills">Professional Skills</option>
+                            <option value="New Learnings">New Learnings</option>
+                            <option value="Economics">Economics</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <label for="input-source">Source</label>
+                        <input type="text" id="input-source" name="source" placeholder="e.g. docs, course, book" />
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-ghost" id="btn-cancel-add-learning">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add learning</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal: Add Applied Skill -->
+        <div id="modal-add-applied" class="modal hidden" role="dialog" aria-labelledby="modal-add-applied-title">
+            <input type="hidden" id="input-learning-id" name="learningId" />
+            <div class="modal-backdrop" id="modal-add-applied-backdrop"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modal-add-applied-title">Add applied skill</h2>
+                    <button type="button" class="modal-close" id="modal-add-applied-close" aria-label="Close">&times;</button>
+                </div>
+                <form id="form-add-applied" class="form">
+                    <div class="form-row">
+                        <label for="input-applied-action">Applied action</label>
+                        <input type="text" id="input-applied-action" name="applied_action" placeholder="e.g., Teach a friend how containers work" />
+                        <span class="form-hint">Make it as small as needed. The goal is action, not perfection.</span>
+                    </div>
+                    <div class="form-row">
+                        <label for="input-type">Type <span class="required">*</span></label>
+                        <select id="input-type" name="type" required>
+                            <option value="">Select type</option>
+                            <option value="Project">Project</option>
+                            <option value="Practice">Practice</option>
+                            <option value="Teaching">Teaching</option>
+                            <option value="Work">Work</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <label for="input-notes">Notes</label>
+                        <textarea id="input-notes" name="notes" rows="2" placeholder="Optional details"></textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-ghost" id="btn-cancel-add-applied">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add applied skill</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+    </div>
+    <script src="main.js"></script>
+</body>
+
+</html>

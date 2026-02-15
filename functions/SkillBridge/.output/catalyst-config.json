@@ -1,0 +1,11 @@
+{
+	"deployment": {
+		"name": "SkillBridge",
+		"stack": "java17",
+		"type": "advancedio",
+		"env_variables": {}
+	},
+	"execution": {
+		"main": "SkillBridge"
+	}
+}
